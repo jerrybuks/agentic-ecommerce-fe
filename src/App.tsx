@@ -5,6 +5,7 @@ import Products from './components/Products';
 import Footer from './components/Footer';
 import ProductsPage from './pages/ProductsPage';
 import OrdersPage from './pages/OrdersPage';
+import PresentationPage from './pages/PresentationPage';
 import Chatbot from './components/Chatbot';
 import './App.css';
 
@@ -26,6 +27,7 @@ function App() {
           />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/presentation" element={<PresentationPage />} />
         </Routes>
         <Chatbot />
       </div>
