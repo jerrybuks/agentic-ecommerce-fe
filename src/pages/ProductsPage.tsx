@@ -4,12 +4,15 @@ import type { ProductFilters } from '../services/api';
 import SearchBar from '../components/SearchBar';
 import FilterPanel from '../components/FilterPanel';
 import ProductCard from '../components/ProductCard';
+import ProductModal from '../components/ProductModal';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 export default function ProductsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 20;
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [filters, setFilters] = useState<ProductFilters>({
     page: 1,
@@ -148,6 +151,10 @@ export default function ProductsPage() {
                       key={product.id}
                       product={product}
                       style={{ animationDelay: `${index * 30}ms` }}
+                      onViewProduct={(productId) => {
+                        setSelectedProductId(productId);
+                        setIsModalOpen(true);
+                      }}
                     />
                   ))}
                 </div>
@@ -179,6 +186,14 @@ export default function ProductsPage() {
         </div>
       </div>
       <Footer />
+      <ProductModal
+        productId={selectedProductId}
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedProductId(null);
+        }}
+      />
     </div>
   );
 }

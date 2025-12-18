@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchProducts, fetchCart, type ProductFilters } from '../services/api';
+import { fetchProducts, fetchCart, fetchOrders, type ProductFilters } from '../services/api';
 
 // Query keys factory for type-safe and consistent keys
 export const productKeys = {
@@ -11,6 +11,10 @@ export const productKeys = {
 
 export const cartKeys = {
   all: ['cart'] as const,
+};
+
+export const orderKeys = {
+  all: ['orders'] as const,
 };
 
 // Hook for fetching featured products on the landing page
@@ -39,6 +43,14 @@ export function useCart() {
     queryKey: cartKeys.all,
     queryFn: fetchCart,
     refetchInterval: 30000, // Refetch every 30 seconds
+  });
+}
+
+// Hook for fetching orders
+export function useOrders() {
+  return useQuery({
+    queryKey: orderKeys.all,
+    queryFn: fetchOrders,
   });
 }
 

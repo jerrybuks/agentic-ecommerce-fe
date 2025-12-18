@@ -4,6 +4,7 @@ import Features from './components/Features';
 import Products from './components/Products';
 import Footer from './components/Footer';
 import ProductsPage from './pages/ProductsPage';
+import OrdersPage from './pages/OrdersPage';
 import Chatbot from './components/Chatbot';
 import './App.css';
 
@@ -24,6 +25,7 @@ function App() {
             }
           />
           <Route path="/products" element={<ProductsPage />} />
+          <Route path="/orders" element={<OrdersPage />} />
         </Routes>
         <Chatbot />
       </div>

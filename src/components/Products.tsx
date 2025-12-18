@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFeaturedProducts } from '../hooks/useProducts';
+import ProductModal from './ProductModal';
 
 function ProductImage({ src, alt, index }: { src: string | null; alt: string; index: number }) {
   const [loaded, setLoaded] = useState(false);
@@ -36,6 +37,8 @@ export default function Products() {
   const navigate = useNavigate();
   const { data, isLoading, isError, error, refetch } = useFeaturedProducts();
   const products = data?.products ?? [];
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const formatPrice = (price: string) => {
     return `$${parseFloat(price).toFixed(2)}`;
@@ -101,7 +104,15 @@ export default function Products() {
                     </p>
                     <div className="product-footer">
                       <div className="product-price">{formatPrice(product.price)}</div>
-                      <button className="btn btn-product">Add to Cart</button>
+                      <button
+                        className="btn btn-product"
+                        onClick={() => {
+                          setSelectedProductId(product.id);
+                          setIsModalOpen(true);
+                        }}
+                      >
+                        View Product
+                      </button>
                     </div>
                     <div className="product-tags">
                       {product.tags.slice(0, 3).map((tag, idx) => (
@@ -125,6 +136,14 @@ export default function Products() {
           </div>
         )}
       </div>
+      <ProductModal
+        productId={selectedProductId}
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedProductId(null);
+        }}
+      />
     </section>
   );
 }

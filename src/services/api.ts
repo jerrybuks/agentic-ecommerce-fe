@@ -144,6 +144,104 @@ export async function generateVoucher(): Promise<VoucherResponse> {
   }
 }
 
+// Order types
+export interface OrderItem {
+  id: number;
+  product_id: number;
+  product_name: string;
+  quantity: number;
+  unit_price: number;
+  subtotal: number;
+}
+
+export interface ShippingAddress {
+  full_name: string;
+  address: string;
+  city: string;
+  zip_code: string;
+}
+
+export interface Order {
+  id: number;
+  session_id: string;
+  voucher_code: string | null;
+  total_amount: number;
+  status: string;
+  created_at: string;
+  items: OrderItem[];
+  shipping_address: ShippingAddress;
+}
+
+// Fetch orders
+export async function fetchOrders(): Promise<Order[]> {
+  const url = `${API_BASE_URL}/user/orders`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch orders: ${response.statusText}`);
+    }
+    const data: Order[] = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    throw error;
+  }
+}
+
+// Product detail types
+export interface ProductDetail {
+  name: string;
+  sku: string;
+  description: string;
+  price: string;
+  cost_price: string;
+  stock_quantity: number;
+  low_stock_threshold: number;
+  weight: string;
+  dimensions: {
+    length: number;
+    width: number;
+    height: number;
+    unit: string;
+  };
+  category: string;
+  tags: string[];
+  images: string[];
+  primary_image: string;
+  is_active: boolean;
+  is_featured: boolean;
+  brand: string;
+  id: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProductDetailError {
+  detail: string;
+}
+
+// Fetch single product by ID
+export async function fetchProduct(id: number): Promise<ProductDetail> {
+  const url = `${API_BASE_URL}/user/products/${id}`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      if (response.status === 404) {
+        const errorData: ProductDetailError = await response.json();
+        throw new Error(errorData.detail || 'Product not found');
+      }
+      throw new Error(`Failed to fetch product: ${response.statusText}`);
+    }
+    const data: ProductDetail = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    throw error;
+  }
+}
+
 export async function fetchProducts(
   filters: ProductFilters = {}
 ): Promise<ProductsResponse> {

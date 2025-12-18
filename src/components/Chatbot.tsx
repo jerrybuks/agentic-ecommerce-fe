@@ -41,11 +41,21 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
   const [isGeneratingVoucher, setIsGeneratingVoucher] = useState(false);
   const [voucher, setVoucher] = useState<{ code: string; amount: number } | null>(null);
   const [sessionId, setSessionId] = useState<string | undefined>();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const loadingSteps = [
+    '', // Step 0: Just dots, no text
+    'Analyzing your request...',
+    'Consulting with AI agents...',
+    'Searching our data sources...',
+    'Gathering recommendations...',
+    'Finalizing response...',
+  ];
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -58,6 +68,29 @@ export default function Chatbot() {
       inputRef.current?.focus();
     }
   }, [isOpen]);
+
+  // Progressive loading steps
+  useEffect(() => {
+    if (!isLoading) {
+      setLoadingStep(0);
+      return;
+    }
+
+    // Start at step 0
+    setLoadingStep(0);
+
+    const interval = setInterval(() => {
+      setLoadingStep((prev) => {
+        // Stop at step 5 (6th step, 0-indexed)
+        if (prev >= 5) {
+          return 5;
+        }
+        return prev + 1;
+      });
+    }, 3000); // Change every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [isLoading]);
 
   const MAX_WORDS = 200;
 
@@ -162,23 +195,18 @@ export default function Chatbot() {
 
   return (
     <>
-      {/* Floating Chat Button */}
-      <button
-        className={`chatbot-toggle ${isOpen ? 'open' : ''}`}
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label={isOpen ? 'Close chat' : 'Open chat'}
-      >
-        {isOpen ? (
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        ) : (
+      {/* Floating Chat Button - Hidden when open */}
+      {!isOpen && (
+        <button
+          className="chatbot-toggle"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Open chat"
+        >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
-        )}
-      </button>
+        </button>
+      )}
 
       {/* Chat Window */}
       {isOpen && (
@@ -302,17 +330,26 @@ export default function Chatbot() {
                   }}
                 />
                 
-                {/* Show sources for assistant messages */}
-                {message.type === 'assistant' && message.sources && message.sources.length > 0 && (
-                  <div className="chatbot-sources">
-                    <span className="chatbot-sources-label">Related Products:</span>
-                    <div className="chatbot-sources-grid">
-                      {message.sources.slice(0, 3).map((source, idx) => (
-                        <SourceCard key={idx} source={source} />
-                      ))}
+                {/* Show product sources for assistant messages */}
+                {message.type === 'assistant' && message.sources && (() => {
+                  // Filter to only show product sources
+                  const productSources = message.sources.filter(
+                    (source) => source.metadata?.source === 'product' && source.metadata?.product_id
+                  );
+                  
+                  if (productSources.length === 0) return null;
+                  
+                  return (
+                    <div className="chatbot-sources">
+                      <span className="chatbot-sources-label">Related Products:</span>
+                      <div className="chatbot-sources-grid">
+                        {productSources.slice(0, 3).map((source, idx) => (
+                          <SourceCard key={`${source.metadata?.product_id || idx}`} source={source} />
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
 
                 {/* Show agent info */}
                 {message.type === 'assistant' && message.agentsUsed && message.agentsUsed.length > 0 && (
@@ -327,10 +364,29 @@ export default function Chatbot() {
 
             {isLoading && (
               <div className="chatbot-message assistant">
-                <div className="chatbot-typing">
-                  <span></span>
-                  <span></span>
-                  <span></span>
+                <div className="chatbot-loading-progress">
+                  <div className="chatbot-loading-content">
+                    <div className="chatbot-loading-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="10" strokeDasharray="31.416" strokeDashoffset="31.416">
+                          <animate attributeName="stroke-dasharray" dur="2s" values="0 31.416;15.708 15.708;0 31.416;0 31.416" repeatCount="indefinite" />
+                          <animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416;-31.416" repeatCount="indefinite" />
+                        </circle>
+                      </svg>
+                    </div>
+                    <div className="chatbot-loading-text-wrapper">
+                      {loadingSteps[loadingStep] && (
+                        <div className="chatbot-loading-text">
+                          {loadingSteps[loadingStep]}
+                        </div>
+                      )}
+                      <div className="chatbot-loading-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

@@ -4,9 +4,10 @@ import type { Product } from '../types/product';
 interface ProductCardProps {
   product: Product;
   style?: React.CSSProperties;
+  onViewProduct?: (productId: number) => void;
 }
 
-export default function ProductCard({ product, style }: ProductCardProps) {
+export default function ProductCard({ product, style, onViewProduct }: ProductCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -48,9 +49,14 @@ export default function ProductCard({ product, style }: ProductCardProps) {
             ? `${product.description.substring(0, 100)}...`
             : product.description}
         </p>
-        <div className="product-footer">
+                    <div className="product-footer">
           <div className="product-price">{formatPrice(product.price)}</div>
-          <button className="btn btn-product">Add to Cart</button>
+          <button
+            className="btn btn-product"
+            onClick={() => onViewProduct?.(product.id)}
+          >
+            View Product
+          </button>
         </div>
         <div className="product-tags">
           {product.tags.slice(0, 3).map((tag, idx) => (

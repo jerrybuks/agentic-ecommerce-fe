@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" fill="#000000"/>
+  
+  <!-- Shopping cart handle -->
+  <path d="M20 24 L20 20 Q20 16 24 16 L40 16 Q44 16 44 20 L44 24" 
+        stroke="#FFFFFF" 
+        stroke-width="3" 
+        fill="none" 
+        stroke-linecap="round"/>
+  
+  <!-- Shopping cart basket -->
+  <path d="M18 24 L18 48 Q18 52 22 52 L42 52 Q46 52 46 48 L46 24" 
+        stroke="#FFFFFF" 
+        stroke-width="3" 
+        fill="none" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+  
+  <!-- Cart wheels -->
+  <circle cx="26" cy="52" r="3" fill="#FFFFFF"/>
+  <circle cx="38" cy="52" r="3" fill="#FFFFFF"/>
+  
+  <!-- Letter S inside cart -->
+  <path d="M28 32 Q32 30 32 34 Q32 38 28 36 Q24 34 24 38 Q24 42 28 40" 
+        stroke="#000000" 
+        stroke-width="2.5" 
+        fill="none" 
+        stroke-linecap="round"/>
+</svg>

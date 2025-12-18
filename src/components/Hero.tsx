@@ -22,7 +22,9 @@ export default function Hero() {
           <button className="btn btn-primary" onClick={() => navigate('/products')}>
             Shop Now
           </button>
-          <button className="btn btn-secondary">Learn More</button>
+          <button className="btn btn-secondary" onClick={() => navigate('/orders')}>
+            View Orders
+          </button>
         </div>
       </div>
     </section>
