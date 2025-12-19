@@ -103,7 +103,14 @@ export default function Cart() {
                     <span>Total:</span>
                     <strong>{cart.total_formatted}</strong>
                   </div>
-                  <button className="btn btn-primary cart-checkout-btn">
+                  <button 
+                    className="btn btn-primary cart-checkout-btn"
+                    onClick={() => {
+                      // Dispatch custom event to populate chatbot input
+                      window.dispatchEvent(new CustomEvent('checkout-clicked'));
+                      setIsOpen(false);
+                    }}
+                  >
                     Checkout
                   </button>
                 </div>
