@@ -69,6 +69,23 @@ export default function Chatbot() {
     }
   }, [isOpen]);
 
+  // Listen for checkout button click
+  useEffect(() => {
+    const handleCheckoutClick = () => {
+      setInput('proceed to checkout');
+      setIsOpen(true);
+      // Focus input after a short delay to ensure it's rendered
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    };
+
+    window.addEventListener('checkout-clicked', handleCheckoutClick);
+    return () => {
+      window.removeEventListener('checkout-clicked', handleCheckoutClick);
+    };
+  }, []);
+
   // Progressive loading steps
   useEffect(() => {
     if (!isLoading) {
