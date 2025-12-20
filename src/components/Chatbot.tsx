@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { sendChatQuery, generateVoucher, type ChatResponse, type ChatSource } from '../services/api';
 import { cartKeys } from '../hooks/useProducts';
@@ -38,7 +37,6 @@ function SourceCard({ source }: { source: ChatSource }) {
 }
 
 export default function Chatbot() {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
