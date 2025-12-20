@@ -51,6 +51,9 @@ export function useOrders() {
   return useQuery({
     queryKey: orderKeys.all,
     queryFn: fetchOrders,
+    refetchOnMount: 'always', // Always refetch when component mounts (route navigation)
+    refetchOnWindowFocus: true, // Refetch when window regains focus
+    staleTime: 1000 * 30, // Data is stale after 30 seconds
   });
 }
 

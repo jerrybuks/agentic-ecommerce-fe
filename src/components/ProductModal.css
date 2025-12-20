@@ -347,11 +347,11 @@
 /* Responsive */
 @media (max-width: 768px) {
   .product-modal-overlay {
-    padding: 1rem;
+    padding: 0.5rem;
   }
 
   .product-modal {
-    max-height: 95vh;
+    max-height: 90vh;
   }
 
   .product-modal-content {

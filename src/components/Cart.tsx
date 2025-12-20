@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../hooks/useProducts';
 
 export default function Cart() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { data: cart, isLoading } = useCart();
@@ -76,7 +78,25 @@ export default function Cart() {
                   <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                 </svg>
                 <p>Your cart is empty</p>
-                <span>Add some products to get started!</span>
+                <span>
+                  Add some products to get started or{' '}
+                  <button
+                    className="cart-empty-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsOpen(false);
+                      // Navigate first
+                      navigate('/orders');
+                      // Close chatbot after navigation
+                      setTimeout(() => {
+                        window.dispatchEvent(new CustomEvent('close-chatbot'));
+                      }, 50);
+                    }}
+                  >
+                    view orders
+                  </button>
+                </span>
               </div>
             ) : (
               <>
