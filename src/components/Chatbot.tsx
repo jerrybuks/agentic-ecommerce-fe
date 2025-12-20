@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { sendChatQuery, generateVoucher, type ChatResponse, type ChatSource } from '../services/api';
 import { cartKeys } from '../hooks/useProducts';
+import Cart from './Cart';
 
 interface Message {
   id: string;
@@ -36,6 +38,7 @@ function SourceCard({ source }: { source: ChatSource }) {
 }
 
 export default function Chatbot() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -44,6 +47,7 @@ export default function Chatbot() {
   const [loadingStep, setLoadingStep] = useState(0);
   const [isGeneratingVoucher, setIsGeneratingVoucher] = useState(false);
   const [voucher, setVoucher] = useState<{ code: string; amount: number } | null>(null);
+  const [voucherCopied, setVoucherCopied] = useState(false);
   const [sessionId, setSessionId] = useState<string | undefined>();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -62,11 +66,39 @@ export default function Chatbot() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Focus input when chat opens
+  // Focus input when chat opens (desktop only, not on mobile)
   useEffect(() => {
     if (isOpen) {
-      inputRef.current?.focus();
+      // Check if device is mobile (screen width <= 480px)
+      const isMobile = window.innerWidth <= 480;
+      if (!isMobile) {
+        inputRef.current?.focus();
+      }
     }
+  }, [isOpen]);
+
+  // Prevent body scroll when chatbot is open (mobile only) and add class for cart sticky
+  useEffect(() => {
+    const isMobile = window.innerWidth <= 480;
+    
+    if (isOpen) {
+      document.body.classList.add('chatbot-open');
+      if (isMobile) {
+        document.body.style.overflow = 'hidden';
+      }
+    } else {
+      document.body.classList.remove('chatbot-open');
+      if (isMobile) {
+        document.body.style.overflow = '';
+      }
+    }
+    // Cleanup: restore scroll when component unmounts
+    return () => {
+      document.body.classList.remove('chatbot-open');
+      if (isMobile) {
+        document.body.style.overflow = '';
+      }
+    };
   }, [isOpen]);
 
   // Listen for checkout button click
@@ -80,9 +112,15 @@ export default function Chatbot() {
       }, 100);
     };
 
+    const handleCloseChatbot = () => {
+      setIsOpen(false);
+    };
+
     window.addEventListener('checkout-clicked', handleCheckoutClick);
+    window.addEventListener('close-chatbot', handleCloseChatbot);
     return () => {
       window.removeEventListener('checkout-clicked', handleCheckoutClick);
+      window.removeEventListener('close-chatbot', handleCloseChatbot);
     };
   }, []);
 
@@ -172,6 +210,7 @@ export default function Chatbot() {
 
   const handleGenerateVoucher = async () => {
     setIsGeneratingVoucher(true);
+    setVoucherCopied(false);
     try {
       const voucherData = await generateVoucher();
       setVoucher({ code: voucherData.code, amount: voucherData.amount });
@@ -189,8 +228,13 @@ export default function Chatbot() {
   };
 
   const handleCopyVoucher = () => {
+    console.log('Copying voucher', voucher);
     if (voucher) {
       navigator.clipboard.writeText(voucher.code);
+      setVoucherCopied(true);
+      setTimeout(() => {
+        setVoucherCopied(false);
+      }, 2000);
     }
   };
 
@@ -239,7 +283,12 @@ export default function Chatbot() {
               </div>
               <div>
                 <h3>Shoplytic Assistant</h3>
-                <span className="chatbot-status">Online</span>
+                <div className="chatbot-header-status-row">
+                  <span className="chatbot-status">Online</span>
+                  <div className="chatbot-header-cart">
+                    <Cart />
+                  </div>
+                </div>
               </div>
             </div>
             <div className="chatbot-header-actions">
@@ -288,18 +337,27 @@ export default function Chatbot() {
                   <div className="chatbot-voucher-banner-code">{voucher.code}</div>
                 </div>
                 <button
-                  className="chatbot-voucher-banner-copy"
+                  className={`chatbot-voucher-banner-copy ${voucherCopied ? 'copied' : ''}`}
                   onClick={handleCopyVoucher}
-                  title="Copy voucher code"
+                  title={voucherCopied ? 'Copied!' : 'Copy voucher code'}
                 >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                  </svg>
+                  {voucherCopied ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                  )}
                 </button>
                 <button
                   className="chatbot-voucher-banner-close"
-                  onClick={() => setVoucher(null)}
+                  onClick={() => {
+                    setVoucher(null);
+                    setVoucherCopied(false);
+                  }}
                   title="Close"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

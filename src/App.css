@@ -62,6 +62,12 @@
   z-index: 10002;
 }
 
+/* Hide cart in hero when chatbot is open */
+body.chatbot-open .hero-top-bar {
+  display: none;
+}
+
+
 .hero-content {
   position: relative;
   z-index: 1;
@@ -216,6 +222,24 @@
 .cart-empty span {
   font-size: 0.875rem;
   color: #888;
+}
+
+.cart-empty-link {
+  background: none;
+  border: none;
+  color: #000000;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
+  transition: opacity 0.2s;
+}
+
+.cart-empty-link:hover {
+  opacity: 0.7;
 }
 
 .cart-items {
@@ -806,6 +830,9 @@
   .section-title {
     font-size: 2rem;
   }
+  .products {
+    padding: 2rem 0.5rem;
+  }
 
   .products-grid {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -848,6 +875,17 @@
   .products-grid {
     grid-template-columns: 1fr;
   }
+
+  /* Increase product card width on home page for mobile */
+  .products .products-grid {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+    gap: 1.5rem;
+  }
+
+  .products .container {
+    padding: 0 0.5rem;
+  }
 }
 
 /* View More Button */
@@ -859,7 +897,7 @@
 /* Products Page */
 .products-page {
   min-height: 100vh;
-  padding: 4rem 0;
+  padding: 0 0 4rem 0;
   background: #ffffff !important;
 }
 
@@ -1091,10 +1129,13 @@
 
 /* Navbar */
 .navbar {
+  position: sticky;
+  top: 0;
   background: #000000;
   color: #ffffff;
   padding: 1rem 0;
   border-bottom: 2px solid #ffffff;
+  z-index: 1000;
 }
 
 .navbar .container {
@@ -1132,6 +1173,53 @@
 
 .navbar-link:hover {
   opacity: 0.8;
+}
+
+/* Navbar responsive */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.75rem 0;
+  }
+
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+
+  .navbar-links {
+    gap: 1rem;
+  }
+
+  .navbar-link {
+    font-size: 0.875rem;
+    letter-spacing: 0.03em;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0.625rem 0;
+  }
+
+  .navbar .container {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .navbar-brand {
+    font-size: 1.125rem;
+    letter-spacing: 0.05em;
+  }
+
+  .navbar-links {
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .navbar-link {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    letter-spacing: 0.02em;
+  }
 }
 
 /* Responsive for Products Page */
@@ -1310,6 +1398,85 @@
   color: #4ade80;
 }
 
+.chatbot-header-status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.chatbot-header-cart {
+  display: flex;
+  align-items: center;
+}
+
+.chatbot-header-cart .cart-button {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.375rem 0.625rem;
+  border-radius: 20px;
+  color: #ffffff;
+  font-size: 0.75rem;
+  gap: 0.375rem;
+}
+
+.chatbot-header-cart .cart-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.chatbot-header-cart .cart-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.chatbot-header-cart .cart-badge {
+  font-size: 0.625rem;
+  min-width: 16px;
+  height: 16px;
+  margin-left: -0.125rem;
+}
+
+.chatbot-header-cart .cart-total {
+  font-size: 0.75rem;
+}
+
+.chatbot-header-cart {
+  position: relative;
+}
+
+.chatbot-header-cart .cart-dropdown {
+  position: fixed;
+  top: 100px;
+  right: 1rem;
+  left: auto;
+  width: 280px;
+  max-width: calc(100vw - 2rem);
+  z-index: 10005;
+  pointer-events: auto;
+}
+
+.chatbot-header-cart .cart-dropdown-content {
+  pointer-events: auto;
+}
+
+.chatbot-header-cart .cart-empty-link {
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure cart dropdown opens on the right on mobile */
+@media (max-width: 480px) {
+  .chatbot-header-cart .cart-dropdown {
+    right: 1rem;
+    left: auto;
+    width: min(280px, calc(100vw - 2rem));
+    max-width: min(280px, calc(100vw - 2rem));
+  }
+}
+
 .chatbot-header-actions {
   display: flex;
   align-items: center;
@@ -1437,6 +1604,21 @@
 .chatbot-voucher-banner-close:hover {
   opacity: 1;
   background: rgba(255, 255, 255, 0.2);
+}
+
+.chatbot-voucher-banner-copy.copied {
+  color: #22c55e !important;
+  background: rgba(34, 197, 94, 0.3) !important;
+  opacity: 1 !important;
+}
+
+.chatbot-voucher-banner-copy.copied:hover {
+  background: rgba(34, 197, 94, 0.4) !important;
+}
+
+.chatbot-voucher-banner-copy.copied svg {
+  color: #22c55e !important;
+  stroke: #22c55e !important;
 }
 
 .chatbot-voucher-banner-copy svg,
@@ -1845,12 +2027,13 @@
   }
 
   .chatbot-window {
+    top: 0;
     bottom: 0;
     right: 0;
     left: 0;
     width: 100%;
-    height: calc(100vh - 60px);
-    max-height: none;
+    height: 100%;
+    max-height: 100%;
     border: none;
     box-shadow: none;
   }

@@ -39,8 +39,16 @@ export default function OrdersPage() {
   const toggleOrder = (orderId: number) => {
     setExpandedOrders((prev) => {
       const newSet = new Set(prev);
-      if (newSet.has(orderId)) {
+      const wasExpanded = newSet.has(orderId);
+      if (wasExpanded) {
         newSet.delete(orderId);
+        // Scroll to top of order card when collapsing
+        setTimeout(() => {
+          const orderElement = document.querySelector(`[data-order-id="${orderId}"]`);
+          if (orderElement) {
+            orderElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
       } else {
         newSet.add(orderId);
       }
@@ -113,7 +121,7 @@ export default function OrdersPage() {
                 const remainingItemsCount = order.items.length - 1;
 
                 return (
-                  <div key={order.id} className="order-card">
+                  <div key={order.id} className="order-card" data-order-id={order.id}>
                     <div className="order-header">
                       <div className="order-header-left">
                         <div className="order-id">Order #{order.id}</div>
