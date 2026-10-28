@@ -16,8 +16,7 @@ export default function Footer() {
               <li><a href="#features">Features</a></li>
               <li><a href="#about">About</a></li>
               <li><a href="#contact">Contact</a></li>
-              <li><Link to="/presentation">Contact 3 · Slides</Link></li>
-              <li><Link to="/contact4">Contact 4 · Slides</Link></li>
+              <li><Link to="/presentation">Presentation</Link></li>
             </ul>
           </div>
           <div className="footer-section">
