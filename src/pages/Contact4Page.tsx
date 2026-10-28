@@ -15,7 +15,7 @@ type Slide = {
   sources?: Source[];
 };
 
-const backendRoot = 'https://github.com/jerrybuks/agentic-ecommerce/blob/main';
+const backendRoot = 'https://github.com/jerrybuks/agentic-ecommerce/blob/codex/golden-cases-mcp';
 
 const sources = {
   loader: `${backendRoot}/src/golden_loader.py`,
