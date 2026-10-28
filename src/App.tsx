@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Hero from './components/Hero';
 import Features from './components/Features';
 import Products from './components/Products';
@@ -6,8 +6,19 @@ import Footer from './components/Footer';
 import ProductsPage from './pages/ProductsPage';
 import OrdersPage from './pages/OrdersPage';
 import PresentationPage from './pages/PresentationPage';
+import Contact4Page from './pages/Contact4Page';
 import Chatbot from './components/Chatbot';
 import './App.css';
+
+function ChatbotOnAppPages() {
+  const location = useLocation();
+
+  if (location.pathname === '/contact4') {
+    return null;
+  }
+
+  return <Chatbot />;
+}
 
 function App() {
   return (
@@ -28,8 +39,9 @@ function App() {
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/presentation" element={<PresentationPage />} />
+          <Route path="/contact4" element={<Contact4Page />} />
         </Routes>
-        <Chatbot />
+        <ChatbotOnAppPages />
       </div>
     </BrowserRouter>
   );
