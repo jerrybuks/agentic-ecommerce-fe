@@ -1,5 +1,15 @@
 # React + TypeScript + Vite
 
+## Shoplytic links
+
+- [Storefront](https://agentic-ecommerce-fe.vercel.app/)
+- [Contact 3 — platform presentation](https://agentic-ecommerce-fe.vercel.app/presentation)
+- [Contact 4 — MCP and OpenAI deployment deck](https://agentic-ecommerce-fe.vercel.app/contact4)
+- [Backend API documentation](https://agentic-ecommerce.onrender.com/docs)
+- [Backend MCP server pull request](https://github.com/jerrybuks/agentic-ecommerce/pull/9)
+
+Contact 4 presents the read-only golden-cases MCP server, its stdio boundary, Inspector workflow, and deployment options. The `/contact4` route intentionally hides the shopping chatbot so the presentation remains focused.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
