@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Cart from './Cart';
 
 export default function Hero() {
@@ -26,6 +26,10 @@ export default function Hero() {
             View Orders
           </button>
         </div>
+        <nav className="hero-presentation-links" aria-label="Course presentations">
+          <Link to="/presentation">Open Contact 3 slides ↗</Link>
+          <Link to="/contact4">Open Contact 4 slides ↗</Link>
+        </nav>
       </div>
     </section>
   );
